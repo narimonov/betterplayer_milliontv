@@ -11,7 +11,7 @@ class MemoryPlayerPage extends StatefulWidget {
 }
 
 class _MemoryPlayerPageState extends State<MemoryPlayerPage> {
-  late BetterPlayerController _betterPlayerController;
+  BetterPlayerController _betterPlayerController;
 
   @override
   void initState() {
@@ -31,8 +31,7 @@ class _MemoryPlayerPageState extends State<MemoryPlayerPage> {
     File file = File(filePath);
 
     List<int> bytes = file.readAsBytesSync().buffer.asUint8List();
-    BetterPlayerDataSource dataSource =
-        BetterPlayerDataSource.memory(bytes, videoExtension: "mp4");
+    BetterPlayerDataSource dataSource = BetterPlayerDataSource.memory(bytes);
     _betterPlayerController.setupDataSource(dataSource);
   }
 
@@ -48,8 +47,7 @@ class _MemoryPlayerPageState extends State<MemoryPlayerPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              "Memory player with plays video from bytes list. In this example"
-              "file bytes are read to list and then used in player.",
+              "Memory player with plays video from bytes.",
               style: TextStyle(fontSize: 16),
             ),
           ),

@@ -9,7 +9,7 @@ class OverriddenAspectRatioPage extends StatefulWidget {
 }
 
 class _OverriddenAspectRatioPageState extends State<OverriddenAspectRatioPage> {
-  late BetterPlayerController _betterPlayerController;
+  BetterPlayerController _betterPlayerController;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _OverriddenAspectRatioPageState extends State<OverriddenAspectRatioPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Overridden aspect ratio"),
+        title: Text("Overridden aspect ratio player"),
       ),
       body: Column(
         children: [

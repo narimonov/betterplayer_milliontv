@@ -8,7 +8,7 @@ class PictureInPicturePage extends StatefulWidget {
 }
 
 class _PictureInPicturePageState extends State<PictureInPicturePage> {
-  late BetterPlayerController _betterPlayerController;
+  BetterPlayerController _betterPlayerController;
   GlobalKey _betterPlayerKey = GlobalKey();
 
   @override
@@ -51,13 +51,13 @@ class _PictureInPicturePageState extends State<PictureInPicturePage> {
               key: _betterPlayerKey,
             ),
           ),
-          ElevatedButton(
+          RaisedButton(
             child: Text("Show PiP"),
             onPressed: () {
               _betterPlayerController.enablePictureInPicture(_betterPlayerKey);
             },
           ),
-          ElevatedButton(
+          RaisedButton(
             child: Text("Disable PiP"),
             onPressed: () async {
               _betterPlayerController.disablePictureInPicture();

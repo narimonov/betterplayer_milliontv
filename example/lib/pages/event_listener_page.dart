@@ -10,10 +10,16 @@ class EventListenerPage extends StatefulWidget {
 }
 
 class _EventListenerPageState extends State<EventListenerPage> {
-  late BetterPlayerController _betterPlayerController;
+  BetterPlayerController _betterPlayerController;
   List<BetterPlayerEvent> events = [];
   StreamController<DateTime> _eventStreamController =
       StreamController.broadcast();
+
+  @override
+  void dispose() {
+    _eventStreamController.close();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -26,29 +32,20 @@ class _EventListenerPageState extends State<EventListenerPage> {
         BetterPlayerDataSourceType.network, Constants.elephantDreamVideoUrl);
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _betterPlayerController.setupDataSource(dataSource);
-    _betterPlayerController.addEventsListener(_handleEvent);
+    _betterPlayerController.addEventsListener((event) {
+      events.insert(0, event);
+
+      ///Used to refresh only list of events
+      _eventStreamController.add(DateTime.now());
+    });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _eventStreamController.close();
-    _betterPlayerController.removeEventsListener(_handleEvent);
-    super.dispose();
-  }
-
-  void _handleEvent(BetterPlayerEvent event) {
-    events.insert(0, event);
-
-    ///Used to refresh only list of events
-    _eventStreamController.add(DateTime.now());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Event listener"),
+        title: Text("Normal player"),
       ),
       body: Column(
         children: [
@@ -56,8 +53,7 @@ class _EventListenerPageState extends State<EventListenerPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              "Better Player exposes events which can be listened with event "
-              "listener. Start player to see events flowing.",
+              "Better Player exposes events which can be listened with event listener. Start player to see events flowing.",
               style: TextStyle(fontSize: 16),
             ),
           ),
@@ -77,8 +73,8 @@ class _EventListenerPageState extends State<EventListenerPage> {
                         (event) => Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Event: ${event.betterPlayerEventType} "
-                                "parameters: ${(event.parameters ?? <String, dynamic>{}).toString()}"),
+                            Text(
+                                "Event: ${event.betterPlayerEventType} parameters: ${(event.parameters ?? <String, dynamic>{}).toString()}"),
                             Divider(),
                           ],
                         ),

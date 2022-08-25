@@ -1,22 +1,32 @@
+// Dart imports:
 import 'dart:async';
+
+// Project imports:
 import 'package:better_player/better_player.dart';
 import 'package:better_player/src/subtitles/better_player_subtitle.dart';
+import 'package:better_player/src/subtitles/better_player_subtitles_configuration.dart';
+import 'package:better_player/src/video_player/video_player.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+// Package imports:
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 class BetterPlayerSubtitlesDrawer extends StatefulWidget {
   final List<BetterPlayerSubtitle> subtitles;
   final BetterPlayerController betterPlayerController;
-  final BetterPlayerSubtitlesConfiguration? betterPlayerSubtitlesConfiguration;
+  final BetterPlayerSubtitlesConfiguration betterPlayerSubtitlesConfiguration;
   final Stream<bool> playerVisibilityStream;
 
   const BetterPlayerSubtitlesDrawer({
-    Key? key,
-    required this.subtitles,
-    required this.betterPlayerController,
+    Key key,
+    @required this.subtitles,
+    @required this.betterPlayerController,
     this.betterPlayerSubtitlesConfiguration,
-    required this.playerVisibilityStream,
-  }) : super(key: key);
+    @required this.playerVisibilityStream,
+  })  : assert(subtitles != null),
+        assert(betterPlayerController != null),
+        assert(playerVisibilityStream != null),
+        super(key: key);
 
   @override
   _BetterPlayerSubtitlesDrawerState createState() =>
@@ -28,15 +38,15 @@ class _BetterPlayerSubtitlesDrawerState
   final RegExp htmlRegExp =
       // ignore: unnecessary_raw_strings
       RegExp(r"<[^>]*>", multiLine: true);
-  late TextStyle _innerTextStyle;
-  late TextStyle _outerTextStyle;
+  TextStyle _innerTextStyle;
+  TextStyle _outerTextStyle;
 
-  VideoPlayerValue? _latestValue;
-  BetterPlayerSubtitlesConfiguration? _configuration;
+  VideoPlayerValue _latestValue;
+  BetterPlayerSubtitlesConfiguration _configuration;
   bool _playerVisible = false;
 
   ///Stream used to detect if play controls are visible or not
-  late StreamSubscription _visibilityStreamSubscription;
+  StreamSubscription _visibilityStreamSubscription;
 
   @override
   void initState() {
@@ -53,28 +63,28 @@ class _BetterPlayerSubtitlesDrawerState
       _configuration = setupDefaultConfiguration();
     }
 
-    widget.betterPlayerController.videoPlayerController!
+    widget.betterPlayerController.videoPlayerController
         .addListener(_updateState);
 
     _outerTextStyle = TextStyle(
-        fontSize: _configuration!.fontSize,
-        fontFamily: _configuration!.fontFamily,
+        fontSize: _configuration.fontSize,
+        fontFamily: _configuration.fontFamily,
         foreground: Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = _configuration!.outlineSize
-          ..color = _configuration!.outlineColor);
+          ..strokeWidth = _configuration.outlineSize
+          ..color = _configuration.outlineColor);
 
     _innerTextStyle = TextStyle(
-        fontFamily: _configuration!.fontFamily,
-        color: _configuration!.fontColor,
-        fontSize: _configuration!.fontSize);
+        fontFamily: _configuration.fontFamily,
+        color: _configuration.fontColor,
+        fontSize: _configuration.fontSize);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    widget.betterPlayerController.videoPlayerController!
+    widget.betterPlayerController.videoPlayerController
         .removeListener(_updateState);
     _visibilityStreamSubscription.cancel();
     super.dispose();
@@ -85,16 +95,14 @@ class _BetterPlayerSubtitlesDrawerState
     if (mounted) {
       setState(() {
         _latestValue =
-            widget.betterPlayerController.videoPlayerController!.value;
+            widget.betterPlayerController.videoPlayerController.value;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final BetterPlayerSubtitle? subtitle = _getSubtitleAtCurrentPosition();
-    widget.betterPlayerController.renderedSubtitle = subtitle;
-    final List<String> subtitles = subtitle?.texts ?? [];
+    final List<String> subtitles = _getSubtitlesAtCurrentPosition();
     final List<Widget> textWidgets =
         subtitles.map((text) => _buildSubtitleTextWidget(text)).toList();
 
@@ -104,10 +112,10 @@ class _BetterPlayerSubtitlesDrawerState
       child: Padding(
         padding: EdgeInsets.only(
             bottom: _playerVisible
-                ? _configuration!.bottomPadding + 30
-                : _configuration!.bottomPadding,
-            left: _configuration!.leftPadding,
-            right: _configuration!.rightPadding),
+                ? _configuration.bottomPadding + 30
+                : _configuration.bottomPadding,
+            left: _configuration.leftPadding,
+            right: _configuration.rightPadding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: textWidgets,
@@ -116,26 +124,25 @@ class _BetterPlayerSubtitlesDrawerState
     );
   }
 
-  BetterPlayerSubtitle? _getSubtitleAtCurrentPosition() {
+  List<String> _getSubtitlesAtCurrentPosition() {
     if (_latestValue == null) {
-      return null;
+      return [];
     }
-
-    final Duration position = _latestValue!.position;
+    final Duration position = _latestValue.position;
     for (final BetterPlayerSubtitle subtitle
         in widget.betterPlayerController.subtitlesLines) {
-      if (subtitle.start! <= position && subtitle.end! >= position) {
-        return subtitle;
+      if (subtitle.start <= position && subtitle.end >= position) {
+        return subtitle.texts;
       }
     }
-    return null;
+    return [];
   }
 
   Widget _buildSubtitleTextWidget(String subtitleText) {
     return Row(children: [
       Expanded(
         child: Align(
-          alignment: _configuration!.alignment,
+          alignment: _configuration.alignment ?? Alignment.center,
           child: _getTextWithStroke(subtitleText),
         ),
       ),
@@ -143,11 +150,14 @@ class _BetterPlayerSubtitlesDrawerState
   }
 
   Widget _getTextWithStroke(String subtitleText) {
+    String subtitleTextToDisplay = subtitleText;
+
+    subtitleTextToDisplay ??= "";
     return Container(
-      color: _configuration!.backgroundColor,
+      color: _configuration.backgroundColor ?? Colors.transparent,
       child: Stack(
         children: [
-          if (_configuration!.outlineEnabled)
+          if (_configuration.outlineEnabled)
             _buildHtmlWidget(subtitleText, _outerTextStyle)
           else
             const SizedBox(),
@@ -158,6 +168,8 @@ class _BetterPlayerSubtitlesDrawerState
   }
 
   Widget _buildHtmlWidget(String text, TextStyle textStyle) {
+    assert(text != null);
+    assert(textStyle != null);
     return HtmlWidget(
       text,
       textStyle: textStyle,

@@ -8,7 +8,7 @@ class OverriddenDurationPage extends StatefulWidget {
 }
 
 class _OverriddenDurationPageState extends State<OverriddenDurationPage> {
-  late BetterPlayerController _betterPlayerController;
+  BetterPlayerController _betterPlayerController;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _OverriddenDurationPageState extends State<OverriddenDurationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Overridden duration"),
+        title: Text("Notification player"),
       ),
       body: Column(
         children: [
@@ -46,8 +46,7 @@ class _OverriddenDurationPageState extends State<OverriddenDurationPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              "Duration of this video is overridden. Now this video will have"
-              " 10 seconds only.",
+              "Click play on player to show notification in status bar.",
               style: TextStyle(fontSize: 16),
             ),
           ),

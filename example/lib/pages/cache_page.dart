@@ -8,8 +8,7 @@ class CachePage extends StatefulWidget {
 }
 
 class _CachePageState extends State<CachePage> {
-  late BetterPlayerController _betterPlayerController;
-  late BetterPlayerDataSource _betterPlayerDataSource;
+  BetterPlayerController _betterPlayerController;
 
   @override
   void initState() {
@@ -18,20 +17,13 @@ class _CachePageState extends State<CachePage> {
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
     );
-    _betterPlayerDataSource = BetterPlayerDataSource(
+    BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
-      Constants.phantomVideoUrl,
-      cacheConfiguration: BetterPlayerCacheConfiguration(
-        useCache: true,
-        preCacheSize: 10 * 1024 * 1024,
-        maxCacheSize: 10 * 1024 * 1024,
-        maxCacheFileSize: 10 * 1024 * 1024,
-
-        ///Android only option to use cached video between app sessions
-        key: "testCacheKey",
-      ),
+      Constants.forBiggerBlazesUrl,
+      cacheConfiguration: BetterPlayerCacheConfiguration(useCache: true),
     );
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
+    _betterPlayerController.setupDataSource(dataSource);
     super.initState();
   }
 
@@ -39,7 +31,7 @@ class _CachePageState extends State<CachePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cache"),
+        title: Text("Normal player"),
       ),
       body: Column(
         children: [
@@ -57,30 +49,6 @@ class _CachePageState extends State<CachePage> {
           AspectRatio(
             aspectRatio: 16 / 9,
             child: BetterPlayer(controller: _betterPlayerController),
-          ),
-          TextButton(
-            child: Text("Start pre cache"),
-            onPressed: () {
-              _betterPlayerController.preCache(_betterPlayerDataSource);
-            },
-          ),
-          TextButton(
-            child: Text("Stop pre cache"),
-            onPressed: () {
-              _betterPlayerController.stopPreCache(_betterPlayerDataSource);
-            },
-          ),
-          TextButton(
-            child: Text("Play video"),
-            onPressed: () {
-              _betterPlayerController.setupDataSource(_betterPlayerDataSource);
-            },
-          ),
-          TextButton(
-            child: Text("Clear cache"),
-            onPressed: () {
-              _betterPlayerController.clearCache();
-            },
           ),
         ],
       ),

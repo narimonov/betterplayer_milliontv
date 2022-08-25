@@ -3,18 +3,18 @@ import 'package:better_player_example/model/video_list_data.dart';
 import 'package:flutter/material.dart';
 
 class VideoListWidget extends StatefulWidget {
-  final VideoListData? videoListData;
+  final VideoListData videoListData;
 
-  const VideoListWidget({Key? key, this.videoListData}) : super(key: key);
+  const VideoListWidget({Key key, this.videoListData}) : super(key: key);
 
   @override
   _VideoListWidgetState createState() => _VideoListWidgetState();
 }
 
 class _VideoListWidgetState extends State<VideoListWidget> {
-  VideoListData? get videoListData => widget.videoListData;
-  BetterPlayerConfiguration? betterPlayerConfiguration;
-  BetterPlayerListVideoPlayerController? controller;
+  VideoListData get videoListData => widget.videoListData;
+  BetterPlayerConfiguration betterPlayerConfiguration;
+  BetterPlayerListVideoPlayerController controller;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _VideoListWidgetState extends State<VideoListWidget> {
           Padding(
             padding: EdgeInsets.all(8),
             child: Text(
-              videoListData!.videoTitle,
+              videoListData.videoTitle,
               style: TextStyle(fontSize: 50),
             ),
           ),
@@ -46,20 +46,18 @@ class _VideoListWidgetState extends State<VideoListWidget> {
               child: BetterPlayerListVideoPlayer(
                 BetterPlayerDataSource(
                   BetterPlayerDataSourceType.network,
-                  videoListData!.videoUrl,
+                  videoListData.videoUrl,
                   notificationConfiguration:
                       BetterPlayerNotificationConfiguration(
-                          showNotification: false,
-                          title: videoListData!.videoTitle,
+                          showNotification: true,
+                          title: videoListData.videoTitle,
                           author: "Test"),
-                  bufferingConfiguration: BetterPlayerBufferingConfiguration(
-                      minBufferMs: 2000,
-                      maxBufferMs: 10000,
-                      bufferForPlaybackMs: 1000,
-                      bufferForPlaybackAfterRebufferMs: 2000),
                 ),
                 configuration: BetterPlayerConfiguration(
-                    autoPlay: false, aspectRatio: 1, handleLifecycle: true),
+                  autoPlay: false,
+                  aspectRatio: 1,
+                  fit: BoxFit.cover,
+                ),
                 //key: Key(videoListData.hashCode.toString()),
                 playFraction: 0.8,
                 betterPlayerListVideoPlayerController: controller,
@@ -77,24 +75,24 @@ class _VideoListWidgetState extends State<VideoListWidget> {
           ),
           Center(
             child: Wrap(children: [
-              ElevatedButton(
+              RaisedButton(
                 child: Text("Play"),
                 onPressed: () {
-                  controller!.play();
+                  controller.play();
                 },
               ),
               const SizedBox(width: 8),
-              ElevatedButton(
+              RaisedButton(
                 child: Text("Pause"),
                 onPressed: () {
-                  controller!.pause();
+                  controller.pause();
                 },
               ),
               const SizedBox(width: 8),
-              ElevatedButton(
+              RaisedButton(
                 child: Text("Set max volume"),
                 onPressed: () {
-                  controller!.setVolume(100);
+                  controller.setVolume(100);
                 },
               ),
             ]),

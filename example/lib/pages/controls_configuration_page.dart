@@ -9,7 +9,7 @@ class ControlsConfigurationPage extends StatefulWidget {
 }
 
 class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
-  late BetterPlayerController _betterPlayerController;
+  BetterPlayerController _betterPlayerController;
 
   @override
   void initState() {
@@ -24,9 +24,6 @@ class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
       enableFullscreen: false,
       controlBarHeight: 60,
       loadingColor: Colors.red,
-      overflowModalColor: Colors.indigo,
-      overflowModalTextColor: Colors.white,
-      overflowMenuIconsColor: Colors.white,
     );
 
     BetterPlayerConfiguration betterPlayerConfiguration =
@@ -61,17 +58,6 @@ class _ControlsConfigurationPageState extends State<ControlsConfigurationPage> {
             aspectRatio: 16 / 9,
             child: BetterPlayer(controller: _betterPlayerController),
           ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _betterPlayerController.setBetterPlayerControlsConfiguration(
-                  BetterPlayerControlsConfiguration(
-                      overflowModalColor: Colors.amberAccent),
-                );
-              });
-            },
-            child: Text("Reset settings"),
-          )
         ],
       ),
     );

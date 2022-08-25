@@ -1,5 +1,4 @@
 import 'package:better_player/better_player.dart';
-import 'package:collection/collection.dart' show IterableExtension;
 
 class ReusableVideoListController {
   final List<BetterPlayerController> _betterPlayerControllerRegistry = [];
@@ -15,10 +14,11 @@ class ReusableVideoListController {
     }
   }
 
-  BetterPlayerController? getBetterPlayerController() {
-    final freeController = _betterPlayerControllerRegistry.firstWhereOrNull(
+  BetterPlayerController getBetterPlayerController() {
+    final freeController = _betterPlayerControllerRegistry.firstWhere(
         (controller) =>
-            !_usedBetterPlayerControllerRegistry.contains(controller));
+            !_usedBetterPlayerControllerRegistry.contains(controller),
+        orElse: () => null);
 
     if (freeController != null) {
       _usedBetterPlayerControllerRegistry.add(freeController);
@@ -28,7 +28,7 @@ class ReusableVideoListController {
   }
 
   void freeBetterPlayerController(
-      BetterPlayerController? betterPlayerController) {
+      BetterPlayerController betterPlayerController) {
     _usedBetterPlayerControllerRegistry.remove(betterPlayerController);
   }
 

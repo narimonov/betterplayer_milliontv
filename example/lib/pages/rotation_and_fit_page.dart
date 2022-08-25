@@ -8,7 +8,7 @@ class RotationAndFitPage extends StatefulWidget {
 }
 
 class _RotationAndFitPageState extends State<RotationAndFitPage> {
-  late BetterPlayerController _betterPlayerController;
+  BetterPlayerController _betterPlayerController;
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _RotationAndFitPageState extends State<RotationAndFitPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Rotation and fit"),
+        title: Text("Normal player"),
       ),
       body: Column(
         children: [

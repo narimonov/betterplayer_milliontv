@@ -9,7 +9,7 @@ class SubtitlesPage extends StatefulWidget {
 }
 
 class _SubtitlesPageState extends State<SubtitlesPage> {
-  late BetterPlayerController _betterPlayerController;
+  BetterPlayerController _betterPlayerController;
 
   @override
   void initState() {
@@ -26,12 +26,6 @@ class _SubtitlesPageState extends State<SubtitlesPage> {
     );
 
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-    _betterPlayerController.addEventsListener((event) {
-      if (event.betterPlayerEventType == BetterPlayerEventType.progress) {
-        print("Current subtitle line: " +
-            _betterPlayerController.renderedSubtitle.toString());
-      }
-    });
     _setupDataSource();
     super.initState();
   }

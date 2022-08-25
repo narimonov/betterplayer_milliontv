@@ -8,7 +8,7 @@ class HlsTracksPage extends StatefulWidget {
 }
 
 class _HlsTracksPageState extends State<HlsTracksPage> {
-  late BetterPlayerController _betterPlayerController;
+  BetterPlayerController _betterPlayerController;
 
   @override
   void initState() {
@@ -18,10 +18,8 @@ class _HlsTracksPageState extends State<HlsTracksPage> {
       fit: BoxFit.contain,
     );
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
-      BetterPlayerDataSourceType.network,
-      Constants.hlsTestStreamUrl,
-      useAsmsSubtitles: true,
-    );
+        BetterPlayerDataSourceType.network, Constants.hlsTestStreamUrl,
+        useHlsSubtitles: true);
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _betterPlayerController.setupDataSource(dataSource);
     super.initState();

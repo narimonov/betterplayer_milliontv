@@ -13,55 +13,25 @@ class _PlaylistPageState extends State<PlaylistPage> {
   final GlobalKey<BetterPlayerPlaylistState> _betterPlayerPlaylistStateKey =
       GlobalKey();
   List<BetterPlayerDataSource> _dataSourceList = [];
-  late BetterPlayerConfiguration _betterPlayerConfiguration;
-  late BetterPlayerPlaylistConfiguration _betterPlayerPlaylistConfiguration;
-
-  _PlaylistPageState() {
-    _betterPlayerConfiguration = BetterPlayerConfiguration(
-      aspectRatio: 1,
-      fit: BoxFit.cover,
-      placeholderOnTop: true,
-      showPlaceholderUntilPlay: true,
-      subtitlesConfiguration: BetterPlayerSubtitlesConfiguration(fontSize: 10),
-      deviceOrientationsAfterFullScreen: [
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ],
-    );
-    _betterPlayerPlaylistConfiguration = BetterPlayerPlaylistConfiguration(
-      loopVideos: true,
-      nextVideoDelay: Duration(seconds: 3),
-    );
-  }
 
   Future<List<BetterPlayerDataSource>> setupData() async {
     _dataSourceList.add(
       BetterPlayerDataSource(
-          BetterPlayerDataSourceType.network, Constants.forBiggerBlazesUrl,
-          subtitles: BetterPlayerSubtitlesSource.single(
-            type: BetterPlayerSubtitlesSourceType.file,
-            url: await Utils.getFileUrl(Constants.fileExampleSubtitlesUrl),
-          ),
-          placeholder: Image.network(
-            Constants.catImageUrl,
-            fit: BoxFit.cover,
-          )),
-    );
-
-    _dataSourceList.add(
-      BetterPlayerDataSource(
         BetterPlayerDataSourceType.network,
-        Constants.bugBuckBunnyVideoUrl,
-        placeholder: Image.network(
-          Constants.catImageUrl,
-          fit: BoxFit.cover,
-        ),
+        Constants.forBiggerBlazesUrl,
+        subtitles: BetterPlayerSubtitlesSource.single(
+            type: BetterPlayerSubtitlesSourceType.file,
+            url: await Utils.getFileUrl(Constants.fileExampleSubtitlesUrl)),
       ),
     );
+
+    _dataSourceList.add(BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network, Constants.bugBuckBunnyVideoUrl));
     _dataSourceList.add(
       BetterPlayerDataSource(
         BetterPlayerDataSourceType.network,
-        Constants.forBiggerJoyridesVideoUrl,
+        Constants.phantomVideoUrl,
+        liveStream: true,
       ),
     );
 
@@ -90,55 +60,37 @@ class _PlaylistPageState extends State<PlaylistPage> {
               AspectRatio(
                 child: BetterPlayerPlaylist(
                   key: _betterPlayerPlaylistStateKey,
-                  betterPlayerConfiguration: _betterPlayerConfiguration,
+                  betterPlayerConfiguration: BetterPlayerConfiguration(
+                      autoPlay: true,
+                      aspectRatio: 1,
+                      fit: BoxFit.cover,
+                      subtitlesConfiguration:
+                          BetterPlayerSubtitlesConfiguration(fontSize: 10),
+                      controlsConfiguration:
+                          BetterPlayerControlsConfiguration.cupertino(),
+                      deviceOrientationsAfterFullScreen: [
+                        DeviceOrientation.portraitUp,
+                        DeviceOrientation.portraitDown,
+                      ]),
                   betterPlayerPlaylistConfiguration:
-                      _betterPlayerPlaylistConfiguration,
-                  betterPlayerDataSourceList: snapshot.data!,
+                      BetterPlayerPlaylistConfiguration(
+                          loopVideos: true,
+                          nextVideoDelay: Duration(seconds: 5)),
+                  betterPlayerDataSourceList: snapshot.data,
                 ),
                 aspectRatio: 1,
               ),
               ElevatedButton(
+                child: Text("Get current position"),
                 onPressed: () {
-                  _betterPlayerPlaylistController!.setupDataSource(0);
+                  var position = _betterPlayerPlaylistStateKey
+                      .currentState
+                      .betterPlayerController
+                      .videoPlayerController
+                      .value
+                      .position;
+                  print("The position is: $position");
                 },
-                child: Text("Change to first data source"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _betterPlayerPlaylistController!.setupDataSource(2);
-                },
-                child: Text("Change to last source"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  print("Currently playing video: " +
-                      _betterPlayerPlaylistController!.currentDataSourceIndex
-                          .toString());
-                },
-                child: Text("Check currently playing video index"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _betterPlayerPlaylistController!.betterPlayerController!
-                      .pause();
-                },
-                child: Text("Pause current video with BetterPlayerController"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  var list = [
-                    BetterPlayerDataSource(
-                      BetterPlayerDataSourceType.network,
-                      Constants.bugBuckBunnyVideoUrl,
-                      placeholder: Image.network(
-                        Constants.catImageUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  ];
-                  _betterPlayerPlaylistController?.setupDataSourceList(list);
-                },
-                child: Text("Setup new data source list"),
               ),
             ]);
           }
@@ -146,8 +98,4 @@ class _PlaylistPageState extends State<PlaylistPage> {
       ),
     );
   }
-
-  BetterPlayerPlaylistController? get _betterPlayerPlaylistController =>
-      _betterPlayerPlaylistStateKey
-          .currentState!.betterPlayerPlaylistController;
 }

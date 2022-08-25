@@ -4,16 +4,12 @@ import 'package:better_player_example/constants.dart';
 import 'package:better_player_example/pages/auto_fullscreen_orientation_page.dart';
 import 'package:better_player_example/pages/basic_player_page.dart';
 import 'package:better_player_example/pages/cache_page.dart';
-import 'package:better_player_example/pages/clearkey_page.dart';
+import 'package:better_player_example/pages/change_player_theme_page.dart';
 import 'package:better_player_example/pages/controller_controls_page.dart';
 import 'package:better_player_example/pages/controls_always_visible_page.dart';
 import 'package:better_player_example/pages/controls_configuration_page.dart';
-import 'package:better_player_example/pages/custom_controls/change_player_theme_page.dart';
-import 'package:better_player_example/pages/dash_page.dart';
-import 'package:better_player_example/pages/drm_page.dart';
 import 'package:better_player_example/pages/event_listener_page.dart';
 import 'package:better_player_example/pages/fade_placeholder_page.dart';
-import 'package:better_player_example/pages/hls_audio_page.dart';
 import 'package:better_player_example/pages/hls_subtitles_page.dart';
 import 'package:better_player_example/pages/hls_tracks_page.dart';
 import 'package:better_player_example/pages/memory_player_page.dart';
@@ -43,7 +39,6 @@ class _WelcomePageState extends State<WelcomePage> {
   void initState() {
     _saveAssetSubtitleToFile();
     _saveAssetVideoToFile();
-    _saveAssetEncryptVideoToFile();
     _saveLogoToFile();
     super.initState();
   }
@@ -102,9 +97,6 @@ class _WelcomePageState extends State<WelcomePage> {
       _buildExampleElementWidget("HLS tracks", () {
         _navigateToPage(HlsTracksPage());
       }),
-      _buildExampleElementWidget("HLS Audio", () {
-        _navigateToPage(HlsAudioPage());
-      }),
       _buildExampleElementWidget("Cache", () {
         _navigateToPage(CachePage());
       }),
@@ -120,47 +112,41 @@ class _WelcomePageState extends State<WelcomePage> {
       _buildExampleElementWidget("Memory player", () {
         _navigateToPage(MemoryPlayerPage());
       }),
-      _buildExampleElementWidget("Controller controls", () {
+      _buildExampleElementWidget("Controller controls page", () {
         _navigateToPage(ControllerControlsPage());
       }),
-      _buildExampleElementWidget("Auto fullscreen orientation", () {
+      _buildExampleElementWidget("Auto fullscreen orientation page", () {
         _navigateToPage(AutoFullscreenOrientationPage());
       }),
-      _buildExampleElementWidget("Overridden aspect ratio", () {
+      _buildExampleElementWidget("Overridden aspect ratio page", () {
         _navigateToPage(OverriddenAspectRatioPage());
       }),
-      _buildExampleElementWidget("Notifications player", () {
+      _buildExampleElementWidget("Overridden aspect ratio page", () {
+        _navigateToPage(OverriddenAspectRatioPage());
+      }),
+      _buildExampleElementWidget("Notifications player page", () {
         _navigateToPage(NotificationPlayerPage());
       }),
-      _buildExampleElementWidget("Reusable video list", () {
+      _buildExampleElementWidget("Reusable video list page", () {
         _navigateToPage(ReusableVideoListPage());
       }),
-      _buildExampleElementWidget("Fade placeholder", () {
+      _buildExampleElementWidget("Fade placeholder page", () {
         _navigateToPage(FadePlaceholderPage());
       }),
-      _buildExampleElementWidget("Placeholder until play", () {
+      _buildExampleElementWidget("Placeholder until play page", () {
         _navigateToPage(PlaceholderUntilPlayPage());
       }),
-      _buildExampleElementWidget("Change player theme", () {
+      _buildExampleElementWidget("Change player theme page", () {
         _navigateToPage(ChangePlayerThemePage());
       }),
-      _buildExampleElementWidget("Overridden duration", () {
+      _buildExampleElementWidget("Overridden duration page", () {
         _navigateToPage(OverriddenDurationPage());
       }),
-      _buildExampleElementWidget("Picture in Picture", () {
+      _buildExampleElementWidget("Picture in Picture page", () {
         _navigateToPage(PictureInPicturePage());
       }),
-      _buildExampleElementWidget("Controls always visible", () {
+      _buildExampleElementWidget("Controls always visible page", () {
         _navigateToPage(ControlsAlwaysVisiblePage());
-      }),
-      _buildExampleElementWidget("DRM", () {
-        _navigateToPage(DrmPage());
-      }),
-      _buildExampleElementWidget("ClearKey DRM", () {
-        _navigateToPage(ClearKeyPage());
-      }),
-      _buildExampleElementWidget("DASH", () {
-        _navigateToPage(DashPage());
       }),
     ];
   }
@@ -168,7 +154,7 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _buildExampleElementWidget(String name, Function onClicked) {
     return Material(
       child: InkWell(
-        onTap: onClicked as void Function()?,
+        onTap: onClicked,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -207,14 +193,6 @@ class _WelcomePageState extends State<WelcomePage> {
     var content = await rootBundle.load("assets/testvideo.mp4");
     final directory = await getApplicationDocumentsDirectory();
     var file = File("${directory.path}/testvideo.mp4");
-    file.writeAsBytesSync(content.buffer.asUint8List());
-  }
-
-  Future _saveAssetEncryptVideoToFile() async {
-    var content =
-        await rootBundle.load("assets/${Constants.fileTestVideoEncryptUrl}");
-    final directory = await getApplicationDocumentsDirectory();
-    var file = File("${directory.path}/${Constants.fileTestVideoEncryptUrl}");
     file.writeAsBytesSync(content.buffer.asUint8List());
   }
 
