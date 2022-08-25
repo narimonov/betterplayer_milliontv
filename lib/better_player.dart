@@ -1,5 +1,6 @@
 library better_player;
 
+
 export 'src/configuration/better_player_cache_configuration.dart';
 export 'src/configuration/better_player_configuration.dart';
 export 'src/configuration/better_player_controls_configuration.dart';
